@@ -817,6 +817,12 @@ class TestGitCommand(TestCaseGit):
         cmd = GitCommand(*args)
         self.assertEqual(cmd.parsed_args.gitpath, '/tmp/gitpath')
 
+        args = ['http://example.com/',
+                '--base-path', '/tmp/basepath']
+
+        cmd = GitCommand(*args)
+        self.assertEqual(cmd.parsed_args.gitpath, '/tmp/basepath/http://example.com/' + '-git')
+
         args = ['/tmp/gitpath/']
 
         cmd = GitCommand(*args)
@@ -856,6 +862,13 @@ class TestGitCommand(TestCaseGit):
         self.assertEqual(parsed_args.uri, 'http://example.com/')
         self.assertEqual(parsed_args.branches, ['master', 'testing'])
         self.assertFalse(parsed_args.no_update)
+
+        args = ['http://example.com/',
+                '--base-path', '/tmp/basepath']
+
+        parsed_args = parser.parse(*args)
+        self.assertEqual(parsed_args.base_path, '/tmp/basepath')
+        self.assertEqual(parsed_args.uri, 'http://example.com/')
 
     def test_mutual_exclusive_update(self):
         """Test whether an exception is thrown when no-update and latest-items flags are set"""
